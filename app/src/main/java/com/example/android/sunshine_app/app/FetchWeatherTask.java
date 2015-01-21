@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,18 +16,19 @@ import java.net.URL;
 /**
  * An async task to fetch weather data
  */
-public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
 
-    final String FORECAST_BASE_URL =
-            "http://api.openweathermap.org/data/2.5/forecast/daily?";
-    final String QUERY_PARAM = "q";
-    final String FORMAT_PARAM = "mode";
-    final String UNITS_PARAM = "units";
-    final String DAYS_PARAM = "cnt";
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
+    private final String FORECAST_BASE_URL =
+            "http://api.openweathermap.org/data/2.5/forecast/daily?";
+    private final String QUERY_PARAM = "q";
+    private final String FORMAT_PARAM = "mode";
+    private final String UNITS_PARAM = "units";
+    private final String DAYS_PARAM = "cnt";
+
     @Override
-    protected Void doInBackground(Void... params) {
+    protected String[] doInBackground(Void... params) {
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -97,6 +100,15 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
                 }
             }
         }
+
+        try {
+            return FetchWeatherTaskUtils.getWeatherDataFromJson(forecastJsonStr, numDays);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+        // This will only happen if there was an error getting or parsing the forecast.
         return null;
     }
 }
