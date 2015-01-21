@@ -3,6 +3,7 @@ package com.example.android.sunshine_app.app;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import org.json.JSONException;
 
@@ -26,6 +27,12 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
     private final String FORMAT_PARAM = "mode";
     private final String UNITS_PARAM = "units";
     private final String DAYS_PARAM = "cnt";
+
+    private ArrayAdapter<String> adapter;
+
+    public FetchWeatherTask(ArrayAdapter<String> adapter) {
+        this.adapter = adapter;
+    }
 
     @Override
     protected String[] doInBackground(Void... params) {
@@ -55,7 +62,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
 
             URL url = new URL(builtUri.toString());
 
-            Log.v(LOG_TAG, "Built URI " + builtUri.toString());
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -63,7 +69,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
@@ -110,5 +116,13 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
 
         // This will only happen if there was an error getting or parsing the forecast.
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(String[] result) {
+        if (result.length != 0) {
+            adapter.clear();
+            adapter.addAll(result);
+        }
     }
 }

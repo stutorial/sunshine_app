@@ -1,7 +1,5 @@
 package com.example.android.sunshine_app.app;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Pablo on 21/01/2015.
+ * Utilities for FetchWeatherTask
  */
 public class FetchWeatherTaskUtils {
-
-    private static final String LOG_TAG = FetchWeatherTaskUtils.class.getSimpleName();
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
@@ -24,7 +20,7 @@ public class FetchWeatherTaskUtils {
         // it must be converted to milliseconds in order to be converted to valid date.
         Date date = new Date(time * 1000);
         SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
-        return format.format(date).toString();
+        return format.format(date);
     }
 
     /**
@@ -35,8 +31,7 @@ public class FetchWeatherTaskUtils {
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
 
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
+        return roundedHigh + "/" + roundedLow;
     }
 
     /**
@@ -91,9 +86,6 @@ public class FetchWeatherTaskUtils {
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
-        for (String s : resultStrs) {
-            Log.v(LOG_TAG, "Forecast entry: " + s);
-        }
         return resultStrs;
 
     }
