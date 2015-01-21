@@ -17,7 +17,7 @@ import java.net.URL;
 /**
  * An async task to fetch weather data
  */
-public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
+public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
@@ -35,7 +35,12 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(Void... params) {
+    protected String[] doInBackground(String... params) {
+
+        if (params.length == 0) {
+            return null;
+        }
+
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -44,7 +49,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
         // Will contain the raw JSON response as a string.
         String forecastJsonStr = null;
 
-        String postalCode = "94043";
+        String postalCode = params[0];
         String format = "json";
         String units = "metric";
         int numDays = 7;

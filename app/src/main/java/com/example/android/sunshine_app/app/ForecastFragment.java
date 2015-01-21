@@ -2,6 +2,7 @@ package com.example.android.sunshine_app.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,7 +71,14 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask(mForecastAdapter).execute();
+
+            String location =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+                            getString(R.string.pref_location_key),
+                            getString(R.string.pref_location_default_value)
+                    );
+
+            new FetchWeatherTask(mForecastAdapter).execute(location);
             return true;
         }
 
