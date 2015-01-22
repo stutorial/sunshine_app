@@ -51,7 +51,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         String postalCode = params[0];
         String format = "json";
-        String units = "metric";
+        String units = params[1];
         int numDays = 7;
 
         try {

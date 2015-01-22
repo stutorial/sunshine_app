@@ -28,6 +28,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mForecastAdapter = new ArrayAdapter<>(
@@ -71,17 +77,26 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-
-            String location =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
-                            getString(R.string.pref_location_key),
-                            getString(R.string.pref_location_default_value)
-                    );
-
-            new FetchWeatherTask(mForecastAdapter).execute(location);
+            updateWeather();
             return true;
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    private void updateWeather() {
+        String location =
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+                        getString(R.string.pref_location_key),
+                        getString(R.string.pref_location_default_value)
+                );
+
+        String units =
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+                        getString(R.string.pref_units_key),
+                        getString(R.string.pref_units_metric)
+                );
+
+        new FetchWeatherTask(mForecastAdapter).execute(location, units);
     }
 }
